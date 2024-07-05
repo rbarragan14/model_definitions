@@ -1,0 +1,5 @@
+Inicio Proyecto
+    Ubicarse en el directorio del proyecto
+    ejecutar 
+
+tmo init
