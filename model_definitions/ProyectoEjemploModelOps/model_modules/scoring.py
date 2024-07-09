@@ -26,20 +26,19 @@ def score(context: ModelContext, **kwargs):
     features_pdf = features_tdf.to_pandas(all_rows=True)
 
     # Scaling the scoring set
-    print ("Loading scaler...NO")
-    #scaler = DataFrame(f"scaler_${context.model_version}")
+    print ("Loading scaler...")
+    scaler = DataFrame(f"scaler_${context.model_version}")
 
-    #scaled_features = ScaleTransform(
-    #    data=features_tdf,
-    #    object=scaler,
-    #    accumulate = entity_key
-    #)
+    scaled_features = ScaleTransform(
+        data=features_tdf,
+        object=scaler,
+        accumulate = entity_key
+    )
     
     print("Scoring")
     predictions = TDGLMPredict(
         object=model,
-        #newdata=scaled_features.result,
-        newdata=features_tdf,
+        newdata=scaled_features.result,
         id_column=entity_key
     )
 
@@ -77,11 +76,11 @@ def score(context: ModelContext, **kwargs):
     print("Saved predictions in Teradata")
 
     # calculate stats
-    #predictions_df = DataFrame.from_query(f"""
-    #    SELECT 
-    #        * 
-    #    FROM {context.dataset_info.get_predictions_metadata_fqtn()} 
-    #        WHERE job_id = '{context.job_id}'
-    #""")
+    predictions_df = DataFrame.from_query(f"""
+        SELECT 
+            * 
+        FROM {context.dataset_info.get_predictions_metadata_fqtn()} 
+            WHERE job_id = '{context.job_id}'
+    """)
 
-    #record_scoring_stats(features_df=features_tdf, predicted_df=predictions_df, context=context)
+    record_scoring_stats(features_df=features_tdf, predicted_df=predictions_df, context=context)

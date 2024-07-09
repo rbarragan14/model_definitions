@@ -74,20 +74,19 @@ def evaluate(context: ModelContext, **kwargs):
     test_df = DataFrame.from_query(context.dataset_info.sql)
 
     # Scaling the test set
-    #print ("Loading scaler...")
-    #scaler = DataFrame(f"scaler_${context.model_version}")
+    print ("Loading scaler...")
+    scaler = DataFrame(f"scaler_${context.model_version}")
 
-    #scaled_test = ScaleTransform(
-    #    data=test_df,
-    #    object=scaler,
-    #    accumulate = [target_name,entity_key]
-    #)
+    scaled_test = ScaleTransform(
+        data=test_df,
+        object=scaler,
+        accumulate = [target_name,entity_key]
+    )
     
     print("Scoring")
     predictions = TDGLMPredict(
         object=model,
-        #newdata=scaled_test.result,
-        newdata=test_df,
+        newdata=scaled_test.result,
         accumulate=target_name,
         id_column=entity_key,
         output_prob=True,
@@ -125,17 +124,17 @@ def evaluate(context: ModelContext, **kwargs):
     with open(f"{context.artifact_output_path}/metrics.json", "w+") as f:
         json.dump(evaluation, f)
         
-    cm = confusion_matrix(predicted_data.result.to_pandas()['loan_status'], predicted_data.result.to_pandas()['prediction'])
+    cm = confusion_matrix(predicted_data.result.to_pandas()['HasDiabetes'], predicted_data.result.to_pandas()['prediction'])
     plot_confusion_matrix(cm, f"{context.artifact_output_path}/confusion_matrix")
 
-    #roc_out = ROC(
-    #    data=predictions.result,
-    #    probability_column='prob_1',
-    #    observation_column=target_name,
-    #    positive_class='1',
-    #    num_thresholds=1000
-    #)
-    #plot_roc_curve(roc_out, f"{context.artifact_output_path}/roc_curve")
+    roc_out = ROC(
+        data=predictions.result,
+        probability_column='prob_1',
+        observation_column=target_name,
+        positive_class='1',
+        num_thresholds=1000
+    )
+    plot_roc_curve(roc_out, f"{context.artifact_output_path}/roc_curve")
 
     # Calculate feature importance and generate plot
     model_pdf = model.to_pandas()[['predictor','estimate']]
