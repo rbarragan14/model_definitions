@@ -26,6 +26,9 @@ def plot_feature_importance(fi, img_filename):
 def train(context: ModelContext, **kwargs):
     aoa_create_context()
     print(context.dataset_info.feature_names)
+    print(context.dataset_info.target_names[0])
+    print(context.dataset_info.entity_key)
+    print(DataFrame.from_query(context.dataset_info.sql))
     feature_names = context.dataset_info.feature_names
     target_name = context.dataset_info.target_names[0]
     entity_key = context.dataset_info.entity_key
