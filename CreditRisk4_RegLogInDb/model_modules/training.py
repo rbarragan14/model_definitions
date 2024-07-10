@@ -87,11 +87,11 @@ def train(context: ModelContext, **kwargs):
     feature_importance = {keys[i]: float(norm_values[i]*1000) for i in range(len(keys))}
     plot_feature_importance(feature_importance, f"{context.artifact_output_path}/feature_importance")
 
-    #record_training_stats(
-    #    train_df,
-    #    features=feature_names,
-    #    targets=[target_name],
-    #    categorical=[target_name],
-    #    feature_importance=feature_importance,
-    #    context=context
-    #)
+    record_training_stats(
+        train_df,
+        features=feature_names,
+        targets=[target_name],
+        categorical=[target_name],
+        feature_importance=feature_importance,
+        context=context
+    )
